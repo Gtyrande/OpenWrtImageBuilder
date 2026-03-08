@@ -88,8 +88,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # 1. Define URLs
-          LATEST_URL="https://api.github.com/repos/whoshoe/openwrt-passwall/releases/latest"
-          TAGS_URL="https://api.github.com/repos/whoshoe/openwrt-passwall/releases?per_page=1"
+          LATEST_URL="https://api.github.com/repos/Gtyrande/openwrt-passwall/releases/latest"
+          TAGS_URL="https://api.github.com/repos/Gtyrande/openwrt-passwall/releases?per_page=1"
           
           echo "Fetching release info..."
           
@@ -137,9 +137,9 @@ jobs:
           TEMP_APK_DIR="${GITHUB_WORKSPACE}/temp_apk_download"
           mkdir -p "$PACKAGE_DIR" "$TEMP_APK_DIR"
 
-          # --- 1. Download Passwall Apps & Dependencies (whoshoe/openwrt-passwall) ---
-          echo "Fetching latest Passwall release from whoshoe/openwrt-passwall..."
-          PW_API_URL="https://api.github.com/repos/whoshoe/openwrt-passwall/releases/latest"
+          # --- 1. Download Passwall Apps & Dependencies (Gtyrande/openwrt-passwall) ---
+          echo "Fetching latest Passwall release from Gtyrande/openwrt-passwall..."
+          PW_API_URL="https://api.github.com/repos/Gtyrande/openwrt-passwall/releases/latest"
           
           # Fetch Release JSON
           PW_RELEASE_JSON=$(curl -s "$PW_API_URL")
