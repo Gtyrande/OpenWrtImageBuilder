@@ -118,9 +118,9 @@ jobs:
             exit 1
           fi
 
-          # 5. Parse URLs
-          LUCI_APP_URL=$(jq -r '.assets[] | select(.name | test(".*luci-app-passwall[-_].*\\.apk$")) | .browser_download_url' release.json | head -n1)
-          LUCI_I18N_URL=$(jq -r '.assets[] | select(.name | test(".*luci-i18n-passwall-zh-cn[-_].*\\.apk$")) | .browser_download_url' release.json | head -n1)
+          # 5. Parse URLs (match only non-prefixed filenames starting with "luci-")
+          LUCI_APP_URL=$(jq -r '.assets[] | select(.name | test("^luci-app-passwall[-_].*\\.apk$")) | .browser_download_url' release.json | head -n1)
+          LUCI_I18N_URL=$(jq -r '.assets[] | select(.name | test("^luci-i18n-passwall-zh-cn[-_].*\\.apk$")) | .browser_download_url' release.json | head -n1)
 
           # 6. Check results
           if [ -z "$LUCI_APP_URL" ] || [ "$LUCI_APP_URL" == "null" ]; then 
@@ -145,8 +145,10 @@ jobs:
           PW_RELEASE_JSON=$(curl -s "$PW_API_URL")
 
           # Parse URLs for: Main App, i18n, and the Dependencies Zip
-          PW_APP_URL=$(echo "$PW_RELEASE_JSON" | grep -oP '"browser_download_url": "\K[^"]+luci-app-passwall[-_][^"]+\.apk' | head -n 1)
-          PW_I18N_URL=$(echo "$PW_RELEASE_JSON" | grep -oP '"browser_download_url": "\K[^"]+luci-i18n-passwall-zh-cn[-_][^"]+\.apk' | head -n 1)
+          # Use /luci- to anchor on the filename boundary, ensuring we pick the
+          # non-prefixed APK (e.g. "luci-app-passwall-..." not "25.12+_luci-app-passwall-...")
+          PW_APP_URL=$(echo "$PW_RELEASE_JSON" | grep -oP '"browser_download_url": "\K[^"]+/luci-app-passwall[-_][^"]+\.apk' | head -n 1)
+          PW_I18N_URL=$(echo "$PW_RELEASE_JSON" | grep -oP '"browser_download_url": "\K[^"]+/luci-i18n-passwall-zh-cn[-_][^"]+\.apk' | head -n 1)
           PW_DEPS_ZIP_URL=$(echo "$PW_RELEASE_JSON" | grep -oP '"browser_download_url": "\K[^"]+passwall_packages_apk_${{ matrix.arch }}\.zip')
 
           echo "Found Passwall App: $PW_APP_URL"
